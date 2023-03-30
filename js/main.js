@@ -99,10 +99,16 @@ btnAgregar.addEventListener("click", function (event) {
     totalEnProduct += parseFloat(txtNumber.value);
     productTotal.innerText = totalEnProduct;
     costoTotal += precio * parseFloat(txtNumber.value);
-    precioTotal.innerHTML = `$${costoTotal.toFixed(2)}`;
-    localStorage.setItem("contProduct", cont);
+    precioTotal.innerHTML = `$ ${costoTotal.toFixed(2)}`;
+    /* localStorage.setItem("contProduct", cont);
     localStorage.setItem("totalEnProduct", totalEnProduct);
     localStorage.setItem("costoTotal", costoTotal.toFixed(2));
+    
+    */
+    let resumen = `{"contProduct":${cont},
+                "totalEnProductos":${totalEnProduct},
+                "costoTotal": ${costoTotal.toFixed(2)}    }`;
+    localStorage.setItem("resumen", resumen);
     txtNombre.value = "";
     txtNumber.value = "";
     txtNombre.focus();
@@ -116,4 +122,22 @@ txtNumber.addEventListener("blur", function (event) {
 txtNombre.addEventListener("blur", function (event) {
   event.preventDefault();
   txtNombre.value = txtNombre.value.trim();
+});
+
+window.addEventListener("load", function (event) {
+  if (this.localStorage.getItem("resumen") == null) {
+    let resumen = `{"contProduct":${cont},
+    "totalEnProductos":${totalEnProduct},
+    "costoTotal": ${costoTotal.toFixed(2)}    }`;
+  }
+localStorage.setItem("resumen",resumen);
+let res= JSON.parse(resumen);
+
+  cont = res.cont;
+  totalEnProduct = res.totalEnProduct;
+  costoTotal = res.costoTotal;
+
+  contProduct.innerText = cont;
+  productTotal.innerText = totalEnProduct;
+  precioTotal.innerText = `$ ${costoTotal}`;
 });
