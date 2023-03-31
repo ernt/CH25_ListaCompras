@@ -15,6 +15,7 @@ let productTotal = document.getElementById("productosTotal");
 let precioTotal = document.getElementById("precioTotal");
 let totalEnProduct = 0;
 let costoTotal = 0;
+let datos = [];
 
 btnAgregar.addEventListener("click", function (event) {
   event.preventDefault();
@@ -94,6 +95,16 @@ btnAgregar.addEventListener("click", function (event) {
             <td>${txtNumber.value}</td>
             <td>${precio}</td>
             </tr>`;
+
+    let elemento = `{
+    "id": ${cont},
+   "nombre": "${txtNombre.value}",
+   "cantidad": "${txtNumber.value}",
+   "precio": "${precio}"
+  }`;
+    datos.push(JSON.parse(elemento));
+    localStorage.setItem("datos", JSON.stringify(datos));
+
     cuerpoTabla[0].insertAdjacentHTML("beforeend", row);
     contProduct.innerText = cont;
     totalEnProduct += parseFloat(txtNumber.value);
@@ -129,12 +140,25 @@ window.addEventListener("load", function (event) {
     let resumen = `{"contProduct":${cont},
     "totalEnProductos":${totalEnProduct},
     "costoTotal": ${costoTotal.toFixed(2)}    }`;
+    localStorage.setItem("resumen", resumen);
   }
-localStorage.setItem("resumen",resumen);
-let res= JSON.parse(resumen);
+  
+  let res = JSON.parse(localStorage.getItem("resumen"));
+  if (localStorage.getItem("datos") != null) {
+    datos = JSON.parse(localStorage.getItem("datos"));
+    datos.forEach(r => {
+      let row = `<tr>
+      <th>${r.id}</th>
+     <td>${r.nombre}</td>
+     <td>${r.cantidad}</td>
+     <td>${r.precio}</td>
+     </tr>`;
+     cuerpoTabla[0].insertAdjacentHTML("beforeend",row);
+    });
+  }
 
-  cont = res.cont;
-  totalEnProduct = res.totalEnProduct;
+  cont = res.contProduct;
+  totalEnProduct = res.totalEnProductos;
   costoTotal = res.costoTotal;
 
   contProduct.innerText = cont;
